@@ -1,0 +1,13 @@
+# This bash script is used to login to a AWS instance as ec2-user with provided ssh key and switch as root user automatically.
+# This script is useful for the system admins who use to login to AWS instance regularly with the same ssh key.
+
+#!/bin/bash
+[ $# -eq 0 ] && { echo "EC2 Instance IP/Hostname missing..."; exit 1; }
+__HOST="$1"
+__PEM_FILE="/path/to/pemfile.pem"				### Modify this 
+__USER="ec2-user"
+__SUDO_CMD="sudo su -"
+
+[ -s "${__PEM_FILE}" ] || { echo "SSH key ${__PEM_FILE} not found, exiting..."; exit 1; }
+
+ssh -o ServerAliveInterval=3600 -o IPQoS=throughput -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i "${__PEM_FILE}" -l "${__USER}" -t "${__HOST}" "${__SUDO_CMD}"
