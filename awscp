@@ -1,0 +1,12 @@
+# This bash script is used to scp files into an AWS instance as ec2-user with provided ssh key
+# This script is useful for the system admins who use to scp files into AWS instance regularly with the same ssh key.
+
+#!/bin/bash
+[ $# -eq 0 ] && { echo "EC2 Instance IP/Hostname missing..."; exit 1; }
+__PEM_FILE="$HOME/Dropbox/CSE-LINUX/saskk-key.pem"
+__USER="ec2-user"
+__SUDO_CMD="sudo su -"
+
+[ -s "${__PEM_FILE}" ] || { echo "SSH key ${__PEM_FILE} not found, exiting..."; exit 1; }
+
+scp -o ServerAliveInterval=3600 -o IPQoS=throughput -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i "${__PEM_FILE}" $*
