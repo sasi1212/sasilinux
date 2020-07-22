@@ -1,0 +1,13 @@
+#!/bin/bash
+[ $# -eq 0 ] && { echo "EC2 Instance IP/Hostname missing..."; exit 1; }
+__HOST="$1"
+__USER="$2"
+__PEM_FILE="$HOME/Dropbox/CSE-LINUX/saskk-key.pem"
+[ "x${__USER}" == "x" ] && __USER="centos"
+__SUDO_CMD="sudo su -"
+__SSH_OPTS="$3"
+
+[ -s "${__PEM_FILE}" ] || { echo "SSH key ${__PEM_FILE} not found, exiting..."; exit 1; }
+
+ssh ${__SSH_OPTS} -o TCPKeepAlive=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o IPQoS=throughput -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i "${__PEM_FILE}" -l "${__USER}" "${__HOST}"
+#ssh ${__SSH_OPTS} -o TCPKeepAlive=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o IPQoS=throughput -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i "${__PEM_FILE}" -l "${__USER}" -t "${__HOST}" "${__SUDO_CMD}"

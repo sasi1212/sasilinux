@@ -1,0 +1,10 @@
+#!/bin/bash
+for region in ${_regions};
+do
+	echo "==> $region"
+	for instance in $(aws ec2 describe-instances --filters Name=instance-state-code,Values=16 --query Reservations[*].Instances[*].[InstanceId] --output text --region $region);
+	do
+		echo "$region - $instance"
+		aws ec2 stop-instances --instance-ids $instance --region $region &
+	done
+done

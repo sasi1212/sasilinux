@@ -1,0 +1,11 @@
+#!/bin/bash
+
+function aws_execute()
+{
+	exec $@
+	[ $? -eq 0 ] && return 1 || return 0
+}
+
+aws_execute aws ec2 stop-instances --instance-id i-092667a7c8e38b735 --region us-east-1
+aws_execute aws ec2 wait instance-stopped --instance-id i-092667a7c8e38b735 --region us-east-1
+
