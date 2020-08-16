@@ -4,9 +4,9 @@ _regions="af-south-1 ap-east-1 ap-northeast-1 ap-northeast-2 ap-northeast-3 ap-s
 for region in ${_regions};
 do
 	echo "==> $region"
-	for instance in $(aws ec2 describe-instances --filters Name=instance-state-code,Values=16 --query Reservations[*].Instances[*].[InstanceId] --output text --region $region);
+	for instance in $(aws ec2 describe-instances --query Reservations[*].Instances[*].[InstanceId] --output text --region $region);
 	do
 		echo "$region - $instance"
-		aws ec2 stop-instances --instance-ids $instance --region $region &
+		aws ec2 terminate-instances --instance-ids $instance --region $region &
 	done
 done
