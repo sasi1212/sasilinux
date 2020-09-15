@@ -1,11 +1,17 @@
 #!/bin/bash
 #ref: https://github.com/sasi1212/aws-regions
 _regions="af-south-1 ap-east-1 ap-northeast-1 ap-northeast-2 ap-northeast-3 ap-south-1 ap-southeast-1 ap-southeast-2 ca-central-1 eu-central-1 eu-north-1 eu-south-1 eu-west-1 eu-west-2 eu-west-3 me-south-1 sa-east-1 us-east-1 us-east-2 us-west-1 us-west-2"
+if ! [ "$1" == "--all" ]; then
+	FILTER="--filters Name=instance-state-code,Values=16"
+fi
 for region in ${_regions};
 do
+	IFS='
+'
 	echo "==> $region"
-	for instance in $(aws ec2 describe-instances --filters Name=instance-state-code,Values=16 --query Reservations[*].Instances[*].[InstanceId] --output text --region $region);
+	for instance in $(aws ec2 describe-instances --query Reservations[*].Instances[*].[InstanceId,State.Name] --output text --region $region ${FILTER});
 	do
 		echo "$region - $instance"
 	done
+	unset IFS
 done
